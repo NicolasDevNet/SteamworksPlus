@@ -134,6 +134,8 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 		{
 			if (Instance == null)
 			{
+				Debug.Log("Start new FacepunchLobby instance");
+
 				Instance = this;
 				DontDestroyOnLoad(gameObject);
 				SetLobbyCallbacks();
@@ -141,8 +143,10 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
             }
 			else
 			{
-				//Replace old instance
-				Destroy(Instance.gameObject);
+                Debug.Log("Keep old FacepunchLobby instance");
+
+                //Replace old instance
+                Destroy(Instance.gameObject);
 
 				Instance = this;
 				DontDestroyOnLoad(gameObject);
@@ -177,10 +181,10 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 		{
 			string commandLine = _facepunchSteam.GetCommandLine();
 
-			if (string.IsNullOrEmpty(commandLine))
-				return;
+            Debug.Log($"Command line received: {commandLine}");
 
-			Debug.Log($"Command line received: {commandLine}");
+            if (string.IsNullOrEmpty(commandLine))
+				return;		
 
 			OnCommandLineCallback?.Invoke(commandLine);
 		}
