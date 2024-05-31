@@ -20,9 +20,18 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Proxies
 			_cachedFriends = new List<Friend>();
 		}
 
-		#region SteamClient
+        #region SteamApps
 
-		public void Init(uint appId, bool asyncCallbacks)
+		public string GetCommandLine()
+		{
+			return SteamApps.CommandLine;
+		}
+
+        #endregion
+
+        #region SteamClient
+
+        public void Init(uint appId, bool asyncCallbacks)
 		{
 			SteamClient.Init(appId, asyncCallbacks);
 		}

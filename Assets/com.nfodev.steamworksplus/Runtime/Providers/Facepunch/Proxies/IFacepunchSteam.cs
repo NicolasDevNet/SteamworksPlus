@@ -51,5 +51,6 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Proxies
 		void SetOnGameRichPresenceJoinRequested(Action<Friend, string> onGameRichPresenceJoinRequested);
 		void RemoveOnGameRichPresenceJoinRequested(Action<Friend, string> onGameRichPresenceJoinRequested);
 		Task<Lobby?> JoinLobby(SteamId lobbyId);
-	}
+        string GetCommandLine();
+    }
 }

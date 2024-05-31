@@ -6,6 +6,7 @@ using Steamworks.Data;
 using Steamworks;
 using SteamworksPlus.Runtime.Providers.Facepunch.Proxies;
 using SteamworksPlus.Runtime.Serializables;
+using UnityEngine.Events;
 
 namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 {
@@ -92,6 +93,8 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
         [Tooltip("Callback to invoke when OnChatMessage is raised.")]
 		public FacepunchSteamMessageEvent OnChatMessageCallback;
 
+		public UnityEvent<string> OnCommandLineCallback;
+
         #endregion
 
         #endregion
@@ -134,7 +137,8 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 				Instance = this;
 				DontDestroyOnLoad(gameObject);
 				SetLobbyCallbacks();
-			}
+				TryReadCommandLine();
+            }
 			else
 			{
 				//Replace old instance
@@ -168,6 +172,18 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 		#endregion
 
 		#region Public
+
+		public void TryReadCommandLine()
+		{
+			string commandLine = _facepunchSteam.GetCommandLine();
+
+			if (string.IsNullOrEmpty(commandLine))
+				return;
+
+			Debug.Log($"Command line received: {commandLine}");
+
+			OnCommandLineCallback?.Invoke(commandLine);
+		}
 
 		public async void StartHost()
 		{
