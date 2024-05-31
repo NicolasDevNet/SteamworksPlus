@@ -8,10 +8,11 @@ using UnityEngine;
 
 namespace SteamworksPlus.Runtime.Providers.Facepunch.Proxies
 {
-	public class FacepunchSteamProxy : IFacepunchSteam
+    /// <summary>
+    /// Default flat-pass class used to make calls to Steam, using the facepunch library
+    /// </summary>
+    public class FacepunchSteamProxy : IFacepunchSteam
 	{
-		private ILogger _logger;
-
 		private List<Friend> _cachedFriends;
 
 		public FacepunchSteamProxy()
@@ -58,13 +59,13 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Proxies
 
 				if (!achievement.State)
 				{
-					_logger.Log(LogType.Log, $"Succes {key} unlocked.");
+					Debug.Log($"Success {key} unlocked.");
 					achievement.Trigger();
 				}
 			}
 			catch (Exception ex)
 			{
-				_logger.LogException(ex);
+				Debug.LogException(ex);
 			}
 		}
 

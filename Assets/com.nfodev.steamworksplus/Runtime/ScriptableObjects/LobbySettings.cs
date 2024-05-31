@@ -2,29 +2,56 @@
 
 namespace SteamworksPlus.Runtime.Serializables
 {
-	[CreateAssetMenu(fileName = "LobbySettings", menuName = "NotTwice/Multi/LobbySettings")]
+    /// <summary>
+    /// Scriptable configuration class for the Steam lobby
+    /// </summary>
+    [CreateAssetMenu(fileName = "LobbySettings", menuName = "SteamworksPlus/LobbySettings")]
 	public class LobbySettings : ScriptableObject
 	{
-		public bool IsPublic;
+        /// <summary>
+        /// Indicates whether the lobby is public or not
+        /// </summary>
+        [Tooltip("Indicates whether the lobby is public or not")]
+        public bool IsPublic;
 
-		public bool IsJoinable;
+        /// <summary>
+        /// Indicates whether the lobby is reachable or not
+        /// </summary>
+        [Tooltip("Indicates whether the lobby is reachable or not")]
+        public bool IsJoinable;
 
-		public bool IsFriendsOnly;
+        /// <summary>
+        /// Indicates whether the lobby is for friends only or not
+        /// </summary>
+        [Tooltip("Indicates whether the lobby is for friends only or not")]
+        public bool IsFriendsOnly;
 
-		[Tooltip("Separator used to interpret a steam chat message.")]
+        /// <summary>
+        /// Separator used to interpret a steam chat message.
+        /// </summary>
+        [Tooltip("Separator used to interpret a steam chat message.")]
 		public string ChatDataMessageSeparator;
 
-		public void SetIsJoinable(bool isJoinable)
+        /// <summary>
+        /// Unity Friendly method for defining whether the lobby is reachable or not
+        /// </summary>
+        public void SetIsJoinable(bool isJoinable)
 		{
 			IsJoinable = isJoinable;
 		}
 
-		public void SetIsPublic(bool isPublic)
+        /// <summary>
+        /// Unity Friendly method for defining whether the lobby is public or not
+        /// </summary>
+        public void SetIsPublic(bool isPublic)
 		{
 			IsPublic = isPublic;
 		}
 
-		public void SetIsFriendsOnly(bool isFriendsOnly)
+        /// <summary>
+        /// Unity Friendly method for defining whether the lobby is for friends only or not
+        /// </summary>
+        public void SetIsFriendsOnly(bool isFriendsOnly)
 		{
 			IsFriendsOnly = isFriendsOnly;
 		}

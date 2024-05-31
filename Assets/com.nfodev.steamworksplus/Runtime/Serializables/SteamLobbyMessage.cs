@@ -1,7 +1,13 @@
 ﻿namespace SteamworksPlus.Runtime.Serializables
 {
-	public abstract class SteamLobbyMessage
+    /// <summary>
+    /// Abstract class for managing steam lobby messages
+    /// </summary>
+    public abstract class SteamLobbyMessage
 	{
-		public string MessageType { get; set; }
+        /// <summary>
+        /// Message type
+        /// </summary>
+        public string MessageType { get; set; }
 	}
 }

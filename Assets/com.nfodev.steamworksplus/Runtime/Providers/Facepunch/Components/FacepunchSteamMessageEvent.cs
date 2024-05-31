@@ -5,7 +5,10 @@ using System;
 
 namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 {
-	[Serializable]
+    /// <summary>
+    /// Classe d'évènement contenant les paramètres <see cref="Lobby"/> pour le lobby d'origine, <see cref="Friend"/> pour le contact d'origine et string pour le contenu du message
+    /// </summary>
+    [Serializable]
 	public class FacepunchSteamMessageEvent : UnityEvent<Lobby, Friend, string>
 	{
 	}

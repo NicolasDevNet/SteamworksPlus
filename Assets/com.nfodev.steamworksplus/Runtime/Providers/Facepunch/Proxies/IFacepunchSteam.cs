@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 namespace SteamworksPlus.Runtime.Providers.Facepunch.Proxies
 {
-	public interface IFacepunchSteam
+    /// <summary>
+    /// Flat-pass interface for implementing common Steam methods
+    /// </summary>
+    public interface IFacepunchSteam
 	{
 		Task<Lobby?> CreatelobbyAsync(int maxMembers = 100);
 		Friend? GetFriend(SteamId friendId);

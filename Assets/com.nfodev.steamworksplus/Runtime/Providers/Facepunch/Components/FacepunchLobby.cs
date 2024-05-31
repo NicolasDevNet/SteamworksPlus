@@ -5,62 +5,106 @@ using Netcode.Transports.Facepunch;
 using Steamworks.Data;
 using Steamworks;
 using SteamworksPlus.Runtime.Providers.Facepunch.Proxies;
-using NotTwice.ScriptableObjects.Runtime.Variables.Typed;
 using SteamworksPlus.Runtime.Serializables;
 
 namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 {
-	[AddComponentMenu("NotTwice/Multi/FacepunchLobby")]
+	/// <summary>
+	/// Gestionnaire de lobby Steam facilitant les retours d'évènement et la transmission de données dans un lobby
+	/// </summary>
+	[AddComponentMenu("SteamworksPlus/FacepunchLobby")]
 	[DisallowMultipleComponent]
 	public class FacepunchLobby : MonoBehaviour
 	{
-		#region Fields
+        #region Fields
 
-		[Required, Tooltip("Shared network manager within the application")]
+        /// <summary>
+        /// Shared network manager within the application
+        /// </summary>
+        [Required, Tooltip("Shared network manager within the application")]
 		public NetworkManager NetworkManager;
 
-		[Required, Tooltip("Shared transport within the application")]
+        /// <summary>
+        /// Shared transport within the application
+        /// </summary>
+        [Required, Tooltip("Shared transport within the application")]
 		public FacepunchTransport Transport;
 
-		[Required, Tooltip("Maximum number of players that can be added to the lobby")]
-		public NTInt32Variable MaxPlayers;
+        /// <summary>
+        /// Maximum number of players that can be added to the lobby
+        /// </summary>
+        [Required, Tooltip("Maximum number of players that can be added to the lobby")]
+		public int MaxPlayers;
 
-		[Required]
+        /// <summary>
+        /// Lobby parameters required to read the message as data
+        /// </summary>
+        [Expandable, Required, Tooltip("Lobby parameters required to read the message as data")]
 		public LobbySettings LobbySettings;
 
-		#region Callbacks
+        #region Callbacks
 
-		[Tooltip("Callback to invoke when OnLobbyCreated is raised.")]
+        /// <summary>
+        /// Callback to invoke when OnLobbyCreated is raised.
+        /// </summary>
+        [Tooltip("Callback to invoke when OnLobbyCreated is raised.")]
 		public SteamCallback OnLobbyCreatedCallback;
 
-		[Tooltip("Callback to invoke when OnGameLobbyJoinRequested is raised.")]
+        /// <summary>
+        /// Callback to invoke when OnGameLobbyJoinRequested is raised.
+        /// </summary>
+        [Tooltip("Callback to invoke when OnGameLobbyJoinRequested is raised.")]
 		public SteamCallback OnGameLobbyJoinRequestedCallback;
 
-		[Tooltip("Callback to invoke when OnGameRichPresenceJoinRequested is raised.")]
+        /// <summary>
+        /// Callback to invoke when OnGameRichPresenceJoinRequested is raised.
+        /// </summary>
+        [Tooltip("Callback to invoke when OnGameRichPresenceJoinRequested is raised.")]
 		public SteamCallback OnGameRichPresenceJoinRequestedCallback;
 
-		[Tooltip("Callback to invoke when OnLobbyMemberJoined is raised.")]
+        /// <summary>
+        /// Callback to invoke when OnLobbyMemberJoined is raised.
+        /// </summary>
+        [Tooltip("Callback to invoke when OnLobbyMemberJoined is raised.")]
 		public FacepunchSteamEvent OnLobbyMemberJoinedCallback;
 
-		[Tooltip("Callback to invoke when OnLobbyMemberLeave is raised.")]
+        /// <summary>
+        /// Callback to invoke when OnLobbyMemberLeave is raised.
+        /// </summary>
+        [Tooltip("Callback to invoke when OnLobbyMemberLeave is raised.")]
 		public FacepunchSteamEvent OnLobbyMemberLeaveCallback;
 
-		[Tooltip("Callback to invoke when OnLobbyMemberLeave is raised and the user is lobby's host.")]
+        /// <summary>
+        /// Callback to invoke when OnLobbyMemberLeave is raised and the user is lobby's host.
+        /// </summary>
+        [Tooltip("Callback to invoke when OnLobbyMemberLeave is raised and the user is lobby's host.")]
 		public FacepunchSteamEvent OnLobbyHostLeaveCallback;
 
-		[Tooltip("Callback to invoke when OnLobbyDataChanged is raised.")]
+        /// <summary>
+        /// Callback to invoke when OnLobbyDataChanged is raised.
+        /// </summary>
+        [Tooltip("Callback to invoke when OnLobbyDataChanged is raised.")]
 		public FacepunchSteamEvent OnLobbyDataChangedCallback;
 
-		[Tooltip("Callback to invoke when OnChatMessage is raised.")]
+        /// <summary>
+        /// Callback to invoke when OnChatMessage is raised.
+        /// </summary>
+        [Tooltip("Callback to invoke when OnChatMessage is raised.")]
 		public FacepunchSteamMessageEvent OnChatMessageCallback;
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		public static FacepunchLobby Instance;
+        /// <summary>
+        /// Static instance of the current lobby manager
+        /// </summary>
+        public static FacepunchLobby Instance;
 
-		public static Lobby? CurrentLobby;
+        /// <summary>
+        /// Current lobby instance joined by a customer
+        /// </summary>
+        public static Lobby? CurrentLobby;
 
 		private IFacepunchSteam _facepunchSteamInternal;
 
@@ -133,7 +177,7 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 
 			NetworkManager.StartHost();
 
-			CurrentLobby = await _facepunchSteam.CreatelobbyAsync(MaxPlayers.Value);
+			CurrentLobby = await _facepunchSteam.CreatelobbyAsync(MaxPlayers);
 		}
 
 		public void LeaveLobby()

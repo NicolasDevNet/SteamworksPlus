@@ -8,15 +8,28 @@ using UnityEngine.Events;
 
 namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 {
-	public abstract class SteamResponseFriendEvent<T> : MonoBehaviour
+    /// <summary>
+    /// Abstract class for interpreting a Steam lobby message
+    /// </summary>
+    /// <typeparam name="T">The type of information transmitted</typeparam>
+    public abstract class SteamResponseFriendEvent<T> : MonoBehaviour
 		where T : class
 	{
-		[Required]
+        /// <summary>
+        /// Lobby parameters required to read the message as data
+        /// </summary>
+        [Expandable ,Required, Tooltip("Lobby parameters required to read the message as data")]
 		public LobbySettings LobbySettings;
 
 		public UnityEvent<Lobby, Friend, T> UnityEvent;
 
-		public void Execute(Lobby lobby, Friend friend, string content)
+        /// <summary>
+        /// Method to execute the callback following a Steam event
+        /// </summary>
+        /// <param name="lobby">The message's lobby of origin</param>
+        /// <param name="friend">The contact who sent the message</param>
+        /// <param name="content">Chain message content</param>
+        public void Execute(Lobby lobby, Friend friend, string content)
 		{
 			string[] args = content.Split(LobbySettings.ChatDataMessageSeparator);
 
