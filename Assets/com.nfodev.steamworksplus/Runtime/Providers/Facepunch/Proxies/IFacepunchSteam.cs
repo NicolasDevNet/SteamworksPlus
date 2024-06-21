@@ -15,10 +15,8 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Proxies
 		Task<Lobby?> CreatelobbyAsync(int maxMembers = 100);
 		Friend? GetFriend(SteamId friendId);
 		List<Friend> GetFriends();
-		Task<Lobby[]> GetFriendsLobbies();
 		Task<Image?> GetLargeAvatarAsync();
 		Task<Image?> GetLargeAvatarAsync(SteamId targetId);
-		Task<Lobby[]> GetLobbyList();
 		string GetName();
 		SteamId GetSteamId();
 		void Init(uint appId, bool asyncCallbacks);
@@ -52,5 +50,16 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Proxies
 		void RemoveOnGameRichPresenceJoinRequested(Action<Friend, string> onGameRichPresenceJoinRequested);
 		Task<Lobby?> JoinLobby(SteamId lobbyId);
         string GetCommandLine();
+        AppId GetAppId();
+        LobbyQuery CreateLobbyQuery();
+        LobbyQuery CreateLobbyQueryWithMaxResult(int maxResult);
+        LobbyQuery AddMaxResultToLobbyQuery(LobbyQuery query, int maxResult);
+        LobbyQuery CreateLobbyQueryWithKeyValue(string key, string value);
+        LobbyQuery AddKeyValueToLobbyQuery(LobbyQuery query, string key, string value);
+        LobbyQuery AddAppIdFilterToLobbyQuery(LobbyQuery query);
+        Task<Lobby[]> ExecuteLobbyQuery(LobbyQuery query);
+        Task<Lobby[]> GetFriendsLobbies(int maxResult);
+        void SetOnLobbyMemberDataChanged(Action<Lobby, Friend> onLobbyMemberDataChanged);
+        void RemoveOnLobbyMemberDataChanged(Action<Lobby, Friend> onLobbyMemberDataChanged);
     }
 }

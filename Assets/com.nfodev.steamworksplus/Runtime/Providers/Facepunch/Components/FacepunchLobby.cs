@@ -7,6 +7,7 @@ using Steamworks;
 using SteamworksPlus.Runtime.Providers.Facepunch.Proxies;
 using SteamworksPlus.Runtime.Serializables;
 using UnityEngine.Events;
+using Codice.CM.Common;
 
 namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 {
@@ -86,6 +87,12 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
         /// </summary>
         [Tooltip("Callback to invoke when OnLobbyDataChanged is raised.")]
 		public FacepunchSteamEvent OnLobbyDataChangedCallback;
+
+        /// <summary>
+        /// Callback to invoke when OnLobbyDataChanged is raised.
+        /// </summary>
+        [Tooltip("Callback to invoke when OnLobbyDataChanged is raised.")]
+        public FacepunchSteamEvent OnLobbyMemberDataChangedCallback;
 
         /// <summary>
         /// Callback to invoke when OnChatMessage is raised.
@@ -335,7 +342,8 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 			_facepunchSteam.SetOnLobbyMemberJoined(OnLobbyMemberJoined);
 			_facepunchSteam.SetOnLobbyMemberLeave(OnLobbyMemberLeave);
 			_facepunchSteam.SetOnLobbyDataChanged(OnLobbyDataChanged);
-			_facepunchSteam.SetOnChatMessage(OnChatMessage);
+			_facepunchSteam.SetOnLobbyMemberDataChanged(OnLobbyMemberDataChanged);
+            _facepunchSteam.SetOnChatMessage(OnChatMessage);
 			_facepunchSteam.SetOnLobbyInvite(OnLobbyInvite);
 			_facepunchSteam.SetOnLobbyEntered(OnLobbyEntered);
 		}
@@ -348,7 +356,8 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 			_facepunchSteam.RemoveOnLobbyMemberJoined(OnLobbyMemberJoined);
 			_facepunchSteam.RemoveOnLobbyMemberLeave(OnLobbyMemberLeave);
 			_facepunchSteam.RemoveOnLobbyDataChanged(OnLobbyDataChanged);
-			_facepunchSteam.RemoveOnChatMessage(OnChatMessage);
+            _facepunchSteam.RemoveOnLobbyMemberDataChanged(OnLobbyMemberDataChanged);
+            _facepunchSteam.RemoveOnChatMessage(OnChatMessage);
 			_facepunchSteam.RemoveOnLobbyInvite(OnLobbyInvite);
 			_facepunchSteam.RemoveOnLobbyEntered(OnLobbyEntered);
 		}
@@ -365,7 +374,9 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 
 				lobby.SetGameServer(lobby.Owner.Id);
 
-				OnLobbyCreatedCallback.Response?.Invoke(lobby, lobby.Owner);
+                lobby.SetData(Constants.AppIdDataKey, _facepunchSteam.GetAppId().ToString());
+
+                OnLobbyCreatedCallback.Response?.Invoke(lobby, lobby.Owner);
 
 				return;
 			}
@@ -466,7 +477,14 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 			OnLobbyDataChangedCallback?.Invoke(lobby, lobby.Owner);
 		}
 
-		private void OnChatMessage(Lobby lobby, Friend friend, string message)
+		public void OnLobbyMemberDataChanged(Lobby lobby, Friend friend)
+		{
+            Debug.Log($"Lobby data member updated. Lobby: {lobby.Id}");
+
+            OnLobbyDataChangedCallback?.Invoke(lobby, friend);
+        }
+
+        private void OnChatMessage(Lobby lobby, Friend friend, string message)
 		{
 			Debug.Log($"Chat message recieved. Lobby: {lobby.Id} | Sender: {friend.Id} | Message: {message}");
 

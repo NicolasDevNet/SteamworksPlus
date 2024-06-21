@@ -1,4 +1,5 @@
-﻿using Steamworks;
+﻿using Codice.CM.Common;
+using Steamworks;
 using Steamworks.Data;
 using System;
 using System.Collections.Generic;
@@ -12,261 +13,317 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Proxies
     /// Default flat-pass class used to make calls to Steam, using the facepunch library
     /// </summary>
     public class FacepunchSteamProxy : IFacepunchSteam
-	{
-		private List<Friend> _cachedFriends;
+    {
+        private List<Friend> _cachedFriends;
 
-		public FacepunchSteamProxy()
-		{
-			_cachedFriends = new List<Friend>();
-		}
+        public FacepunchSteamProxy()
+        {
+            _cachedFriends = new List<Friend>();
+        }
 
         #region SteamApps
 
-		public string GetCommandLine()
-		{
-			return SteamApps.CommandLine;
-		}
+        public string GetCommandLine()
+        {
+            return SteamApps.CommandLine;
+        }
 
         #endregion
 
         #region SteamClient
 
         public void Init(uint appId, bool asyncCallbacks)
-		{
-			SteamClient.Init(appId, asyncCallbacks);
-		}
+        {
+            SteamClient.Init(appId, asyncCallbacks);
+        }
 
-		public void Shutdown()
-		{
-			SteamClient.Shutdown();
-		}
+        public void Shutdown()
+        {
+            SteamClient.Shutdown();
+        }
 
-		public void RunCallbacks()
-		{
-			SteamClient.RunCallbacks();
-		}
+        public void RunCallbacks()
+        {
+            SteamClient.RunCallbacks();
+        }
 
-		public string GetName()
-		{
-			return SteamClient.Name;
-		}
+        public string GetName()
+        {
+            return SteamClient.Name;
+        }
 
-		public SteamId GetSteamId()
-		{
-			return SteamClient.SteamId;
-		}
+        public SteamId GetSteamId()
+        {
+            return SteamClient.SteamId;
+        }
 
-		#endregion
+        public AppId GetAppId()
+        {
+            return SteamClient.AppId;
+        }
 
-		#region Data
+        #endregion
 
-		public void UnlockSuccess(string key)
-		{
-			try
-			{
-				var achievement = new Achievement(key);
+        #region Data
 
-				if (!achievement.State)
-				{
-					Debug.Log($"Success {key} unlocked.");
-					achievement.Trigger();
-				}
-			}
-			catch (Exception ex)
-			{
-				Debug.LogException(ex);
-			}
-		}
+        public void UnlockSuccess(string key)
+        {
+            try
+            {
+                var achievement = new Achievement(key);
 
-		#endregion
+                if (!achievement.State)
+                {
+                    Debug.Log($"Success {key} unlocked.");
+                    achievement.Trigger();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex);
+            }
+        }
 
-		#region SteamFriends
+        #endregion
 
-		public async Task<Image?> GetLargeAvatarAsync()
-		{
-			return await GetLargeAvatarAsync(SteamClient.SteamId);
-		}
+        #region SteamFriends
 
-		public async Task<Image?> GetLargeAvatarAsync(SteamId targetId)
-		{
-			return await SteamFriends.GetLargeAvatarAsync(targetId);
-		}
+        public async Task<Image?> GetLargeAvatarAsync()
+        {
+            return await GetLargeAvatarAsync(SteamClient.SteamId);
+        }
 
-		public void OpenGameInviteOverlay(SteamId lobbyId)
-		{
-			SteamFriends.OpenGameInviteOverlay(lobbyId);
-		}
+        public async Task<Image?> GetLargeAvatarAsync(SteamId targetId)
+        {
+            return await SteamFriends.GetLargeAvatarAsync(targetId);
+        }
 
-		public List<Friend> GetFriends()
-		{
+        public void OpenGameInviteOverlay(SteamId lobbyId)
+        {
+            SteamFriends.OpenGameInviteOverlay(lobbyId);
+        }
 
-			if (_cachedFriends == null)
-			{
-				_cachedFriends = new List<Friend>(SteamFriends.GetFriends());
-			}
+        public List<Friend> GetFriends()
+        {
 
-			return _cachedFriends;
-		}
+            if (_cachedFriends == null)
+            {
+                _cachedFriends = new List<Friend>(SteamFriends.GetFriends());
+            }
 
-		public Friend? GetFriend(SteamId friendId)
-		{
-			return GetFriends().FirstOrDefault(p => p.Id == friendId);
-		}
+            return _cachedFriends;
+        }
 
-		public void SetOnGameLobbyJoinRequested(Action<Lobby, SteamId> onGameLobbyJoinRequested)
-		{
-			SteamFriends.OnGameLobbyJoinRequested += onGameLobbyJoinRequested;
-		}
+        public Friend? GetFriend(SteamId friendId)
+        {
+            return GetFriends().FirstOrDefault(p => p.Id == friendId);
+        }
 
-		public void RemoveOnGameLobbyJoinRequested(Action<Lobby, SteamId> onGameLobbyJoinRequested)
-		{
-			SteamFriends.OnGameLobbyJoinRequested -= onGameLobbyJoinRequested;
-		}
+        public void SetOnGameLobbyJoinRequested(Action<Lobby, SteamId> onGameLobbyJoinRequested)
+        {
+            SteamFriends.OnGameLobbyJoinRequested += onGameLobbyJoinRequested;
+        }
 
-		public void SetOnGameRichPresenceJoinRequested(Action<Friend, string> onGameRichPresenceJoinRequested)
-		{
-			SteamFriends.OnGameRichPresenceJoinRequested += onGameRichPresenceJoinRequested;
-		}
+        public void RemoveOnGameLobbyJoinRequested(Action<Lobby, SteamId> onGameLobbyJoinRequested)
+        {
+            SteamFriends.OnGameLobbyJoinRequested -= onGameLobbyJoinRequested;
+        }
 
-		public void RemoveOnGameRichPresenceJoinRequested(Action<Friend, string> onGameRichPresenceJoinRequested)
-		{
-			SteamFriends.OnGameRichPresenceJoinRequested -= onGameRichPresenceJoinRequested;
-		}
+        public void SetOnGameRichPresenceJoinRequested(Action<Friend, string> onGameRichPresenceJoinRequested)
+        {
+            SteamFriends.OnGameRichPresenceJoinRequested += onGameRichPresenceJoinRequested;
+        }
 
-		#endregion
+        public void RemoveOnGameRichPresenceJoinRequested(Action<Friend, string> onGameRichPresenceJoinRequested)
+        {
+            SteamFriends.OnGameRichPresenceJoinRequested -= onGameRichPresenceJoinRequested;
+        }
 
-		#region Mathmaking
+        #endregion
 
-		public async Task<Lobby?> JoinLobby(SteamId lobbyId)
-		{
-			return await SteamMatchmaking.JoinLobbyAsync(lobbyId);
-		}
+        #region Mathmaking
 
-		public async Task<Lobby[]> GetLobbyList()
-		{			
-			return await SteamMatchmaking.LobbyList.WithSlotsAvailable(1).FilterDistanceWorldwide().RequestAsync();
-		}
+        public async Task<Lobby?> JoinLobby(SteamId lobbyId)
+        {
+            return await SteamMatchmaking.JoinLobbyAsync(lobbyId);
+        }
 
-		public async Task<Lobby[]> GetFriendsLobbies()
-		{
-			Lobby[] lobbyList = await GetLobbyList();
+        public LobbyQuery CreateLobbyQuery()
+        {
+            return SteamMatchmaking.LobbyList;
+        }
 
-			List<Friend> friendList = GetFriends();
+        public LobbyQuery CreateLobbyQueryWithMaxResult(int maxResult)
+        {
+            return CreateLobbyQuery().WithMaxResults(maxResult);
+        }
 
-			if (lobbyList == null)
-			{
-				return new Lobby[0];
-			}
+        public LobbyQuery AddMaxResultToLobbyQuery(LobbyQuery query, int maxResult)
+        {
+            return query.WithMaxResults(maxResult);
+        }
 
-			return lobbyList.Where(l => friendList.Any(f => f.Id == l.Owner.Id && !f.IsMe)).ToArray();
-		}
+        public LobbyQuery CreateLobbyQueryWithKeyValue(string key, string value)
+        {
+            return CreateLobbyQuery().WithKeyValue(key, value);
+        }
 
-		public async Task<Lobby?> CreatelobbyAsync(int maxMembers = 100)
-		{
-			return await SteamMatchmaking.CreateLobbyAsync(maxMembers);
-		}
+        public LobbyQuery AddKeyValueToLobbyQuery(LobbyQuery query, string key, string value)
+        {
+            return query.WithKeyValue(key, value);
+        }
 
-		public void SetOnLobbyCreated(Action<Result, Lobby> onLobbyCreated)
-		{
-			SteamMatchmaking.OnLobbyCreated += onLobbyCreated;
-		}
+        public LobbyQuery AddAppIdFilterToLobbyQuery(LobbyQuery query)
+        {
+            return query.WithKeyValue(Constants.AppIdDataKey, GetAppId().ToString());
+        }
 
-		public void SetOnLobbyEntered(Action<Lobby> onLobbyEntered)
-		{
-			SteamMatchmaking.OnLobbyEntered += onLobbyEntered;
-		}
+        public async Task<Lobby[]> ExecuteLobbyQuery(LobbyQuery query)
+        {
+            return await query.RequestAsync();
+        }
 
-		public void SetOnLobbyInvite(Action<Friend, Lobby> onLobbyInvite)
-		{
-			SteamMatchmaking.OnLobbyInvite += onLobbyInvite;
-		}
+        public async Task<Lobby[]> GetFriendsLobbies(int maxResult)
+        {
+            Lobby[] lobbyList = await ExecuteLobbyQuery(CreateLobbyQueryWithMaxResult(maxResult));
 
-		public void SetOnLobbyGameCreated(Action<Lobby, uint, ushort, SteamId> onLobbyGameCreated)
-		{
-			SteamMatchmaking.OnLobbyGameCreated += onLobbyGameCreated;
-		}
+            if (lobbyList == null)
+            {
+                Debug.Log("No lobby for this game");
+                return new Lobby[0];
+            }
 
-		public void SetOnLobbyMemberJoined(Action<Lobby, Friend> onLobbyMemberJoined)
-		{
-			SteamMatchmaking.OnLobbyMemberJoined += onLobbyMemberJoined;
-		}
+            List<Friend> friendList = GetFriends();
 
-		public void SetOnLobbyMemberKicked(Action<Lobby, Friend, Friend> onLobbyMemberKicked)
-		{
-			SteamMatchmaking.OnLobbyMemberKicked += onLobbyMemberKicked;
-		}
+            List<Friend> friendsInLobby = lobbyList.SelectMany(p => p.Members).Where(c => !c.IsMe).Distinct().ToList();
 
-		public void SetOnChatMessage(Action<Lobby, Friend, string> onChatMessage)
-		{
-			SteamMatchmaking.OnChatMessage += onChatMessage;
-		}
+            if (friendsInLobby.Count == 0)
+            {
+                Debug.Log("No friends in current lobbies");
+                return new Lobby[0];
+            }
 
-		public void SetOnLobbyMemberLeave(Action<Lobby, Friend> onLobbyMemberLeave)
-		{
-			SteamMatchmaking.OnLobbyMemberLeave += onLobbyMemberLeave;
-		}
+            return friendsInLobby
+            .Select(friend => lobbyList.FirstOrDefault(lobby => lobby.Members.Contains(friend)))
+            .ToArray();
+        }
 
-		public void SetOnLobbyMemberDisconnected(Action<Lobby, Friend> onLobbyMemberDisconnected)
-		{
-			SteamMatchmaking.OnLobbyMemberDisconnected += onLobbyMemberDisconnected;
-		}
+        public async Task<Lobby?> CreatelobbyAsync(int maxMembers = 100)
+        {
+            return await SteamMatchmaking.CreateLobbyAsync(maxMembers);
+        }
 
-		public void SetOnLobbyDataChanged(Action<Lobby> onLobbyDataChanged)
-		{
-			SteamMatchmaking.OnLobbyDataChanged += onLobbyDataChanged;
-		}
+        public void SetOnLobbyCreated(Action<Result, Lobby> onLobbyCreated)
+        {
+            SteamMatchmaking.OnLobbyCreated += onLobbyCreated;
+        }
 
-		public void RemoveOnLobbyDataChanged(Action<Lobby> onLobbyDataChanged)
-		{
-			SteamMatchmaking.OnLobbyDataChanged -= onLobbyDataChanged;
-		}
+        public void SetOnLobbyEntered(Action<Lobby> onLobbyEntered)
+        {
+            SteamMatchmaking.OnLobbyEntered += onLobbyEntered;
+        }
 
-		public void RemoveOnLobbyCreated(Action<Result, Lobby> onLobbyCreated)
-		{
-			SteamMatchmaking.OnLobbyCreated -= onLobbyCreated;
-		}
+        public void SetOnLobbyInvite(Action<Friend, Lobby> onLobbyInvite)
+        {
+            SteamMatchmaking.OnLobbyInvite += onLobbyInvite;
+        }
 
-		public void RemoveOnLobbyEntered(Action<Lobby> onLobbyEntered)
-		{
-			SteamMatchmaking.OnLobbyEntered -= onLobbyEntered;
-		}
+        public void SetOnLobbyGameCreated(Action<Lobby, uint, ushort, SteamId> onLobbyGameCreated)
+        {
+            SteamMatchmaking.OnLobbyGameCreated += onLobbyGameCreated;
+        }
 
-		public void RemoveOnLobbyInvite(Action<Friend, Lobby> onLobbyInvite)
-		{
-			SteamMatchmaking.OnLobbyInvite -= onLobbyInvite;
-		}
+        public void SetOnLobbyMemberJoined(Action<Lobby, Friend> onLobbyMemberJoined)
+        {
+            SteamMatchmaking.OnLobbyMemberJoined += onLobbyMemberJoined;
+        }
 
-		public void RemoveOnLobbyGameCreated(Action<Lobby, uint, ushort, SteamId> onLobbyGameCreated)
-		{
-			SteamMatchmaking.OnLobbyGameCreated -= onLobbyGameCreated;
-		}
+        public void SetOnLobbyMemberKicked(Action<Lobby, Friend, Friend> onLobbyMemberKicked)
+        {
+            SteamMatchmaking.OnLobbyMemberKicked += onLobbyMemberKicked;
+        }
 
-		public void RemoveOnLobbyMemberJoined(Action<Lobby, Friend> onLobbyMemberJoined)
-		{
-			SteamMatchmaking.OnLobbyMemberJoined -= onLobbyMemberJoined;
-		}
+        public void SetOnChatMessage(Action<Lobby, Friend, string> onChatMessage)
+        {
+            SteamMatchmaking.OnChatMessage += onChatMessage;
+        }
 
-		public void RemoveOnLobbyMemberKicked(Action<Lobby, Friend, Friend> onLobbyMemberKicked)
-		{
-			SteamMatchmaking.OnLobbyMemberKicked -= onLobbyMemberKicked;
-		}
+        public void SetOnLobbyMemberLeave(Action<Lobby, Friend> onLobbyMemberLeave)
+        {
+            SteamMatchmaking.OnLobbyMemberLeave += onLobbyMemberLeave;
+        }
 
-		public void RemoveOnLobbyMemberLeave(Action<Lobby, Friend> onLobbyMemberLeave)
-		{
-			SteamMatchmaking.OnLobbyMemberLeave -= onLobbyMemberLeave;
-		}
+        public void SetOnLobbyMemberDisconnected(Action<Lobby, Friend> onLobbyMemberDisconnected)
+        {
+            SteamMatchmaking.OnLobbyMemberDisconnected += onLobbyMemberDisconnected;
+        }
 
-		public void RemoveOnLobbyMemberDisconnected(Action<Lobby, Friend> onLobbyMemberDisconnected)
-		{
-			SteamMatchmaking.OnLobbyMemberDisconnected -= onLobbyMemberDisconnected;
-		}
+        public void SetOnLobbyDataChanged(Action<Lobby> onLobbyDataChanged)
+        {
+            SteamMatchmaking.OnLobbyDataChanged += onLobbyDataChanged;
+        }
 
-		public void RemoveOnChatMessage(Action<Lobby, Friend, string> onChatMessage)
-		{
-			SteamMatchmaking.OnChatMessage -= onChatMessage;
-		}
+        public void RemoveOnLobbyDataChanged(Action<Lobby> onLobbyDataChanged)
+        {
+            SteamMatchmaking.OnLobbyDataChanged -= onLobbyDataChanged;
+        }
 
-		#endregion
-	}
+        public void SetOnLobbyMemberDataChanged(Action<Lobby, Friend> onLobbyMemberDataChanged)
+        {
+            SteamMatchmaking.OnLobbyMemberDataChanged += onLobbyMemberDataChanged;
+        }
+
+        public void RemoveOnLobbyMemberDataChanged(Action<Lobby, Friend> onLobbyMemberDataChanged)
+        {
+            SteamMatchmaking.OnLobbyMemberDataChanged -= onLobbyMemberDataChanged;
+        }
+
+        public void RemoveOnLobbyCreated(Action<Result, Lobby> onLobbyCreated)
+        {
+            SteamMatchmaking.OnLobbyCreated -= onLobbyCreated;
+        }
+
+        public void RemoveOnLobbyEntered(Action<Lobby> onLobbyEntered)
+        {
+            SteamMatchmaking.OnLobbyEntered -= onLobbyEntered;
+        }
+
+        public void RemoveOnLobbyInvite(Action<Friend, Lobby> onLobbyInvite)
+        {
+            SteamMatchmaking.OnLobbyInvite -= onLobbyInvite;
+        }
+
+        public void RemoveOnLobbyGameCreated(Action<Lobby, uint, ushort, SteamId> onLobbyGameCreated)
+        {
+            SteamMatchmaking.OnLobbyGameCreated -= onLobbyGameCreated;
+        }
+
+        public void RemoveOnLobbyMemberJoined(Action<Lobby, Friend> onLobbyMemberJoined)
+        {
+            SteamMatchmaking.OnLobbyMemberJoined -= onLobbyMemberJoined;
+        }
+
+        public void RemoveOnLobbyMemberKicked(Action<Lobby, Friend, Friend> onLobbyMemberKicked)
+        {
+            SteamMatchmaking.OnLobbyMemberKicked -= onLobbyMemberKicked;
+        }
+
+        public void RemoveOnLobbyMemberLeave(Action<Lobby, Friend> onLobbyMemberLeave)
+        {
+            SteamMatchmaking.OnLobbyMemberLeave -= onLobbyMemberLeave;
+        }
+
+        public void RemoveOnLobbyMemberDisconnected(Action<Lobby, Friend> onLobbyMemberDisconnected)
+        {
+            SteamMatchmaking.OnLobbyMemberDisconnected -= onLobbyMemberDisconnected;
+        }
+
+        public void RemoveOnChatMessage(Action<Lobby, Friend, string> onChatMessage)
+        {
+            SteamMatchmaking.OnChatMessage -= onChatMessage;
+        }
+
+        #endregion
+    }
 
 }
