@@ -1,10 +1,10 @@
 {
   "name": "com.nfodev.steamworksplus",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "unity": "2022.3",
   "unityRelease": "19f1",
-  "displayName": "NotTwice Steam",
-  "description": "NotTwice Steam provides scripts to make it easier to use Steam through various providers",
+  "displayName": "SteamworksPlus",
+  "description": "SteamworksPlus is an extension library for the Steamworks system. It includes various providers, currently only supported by Facepunch. This library adds event management to the various behaviors found in Steamworks.",
   "keywords": [
     "facepunch",
     "steam"
@@ -14,6 +14,9 @@
   },
   "dependencies": {
     "com.community.netcode.transport.facepunch": "https://github.com/Unity-Technologies/multiplayer-community-contributions.git?path=/Transports/com.community.netcode.transport.facepunch",
-    "com.dbrizov.naughtyattributes": "https://github.com/dbrizov/NaughtyAttributes.git#upm"
+    "com.dbrizov.naughtyattributes": "https://github.com/dbrizov/NaughtyAttributes.git#upm",
+    "com.nottwice.events": "https://github.com/NicolasDevNet/NotTwice.git?path=Assets/com.nottwice.events",
+    "com.neuecc.unirx": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
+    "com.unity.netcode.gameobjects": "1.7.1"
   }
 }
