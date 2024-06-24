@@ -7,7 +7,6 @@ using Steamworks;
 using SteamworksPlus.Runtime.Providers.Facepunch.Proxies;
 using SteamworksPlus.Runtime.Serializables;
 using UnityEngine.Events;
-using Codice.CM.Common;
 
 namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 {
@@ -374,7 +373,7 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 
 				lobby.SetGameServer(lobby.Owner.Id);
 
-                lobby.SetData(Constants.AppIdDataKey, _facepunchSteam.GetAppId().ToString());
+                lobby.SetData(SPConstants.AppIdDataKey, _facepunchSteam.GetAppId().ToString());
 
                 OnLobbyCreatedCallback.Response?.Invoke(lobby, lobby.Owner);
 

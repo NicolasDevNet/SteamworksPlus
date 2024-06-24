@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SteamworksPlus.Runtime
 {
-    public static class SPConstants
+    public static class Constants
     {
         public const string AppIdDataKey = "AppId";
     }

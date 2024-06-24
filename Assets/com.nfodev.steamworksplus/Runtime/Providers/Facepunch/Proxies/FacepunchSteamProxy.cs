@@ -1,5 +1,4 @@
-﻿using Codice.CM.Common;
-using Steamworks;
+﻿using Steamworks;
 using Steamworks.Data;
 using System;
 using System.Collections.Generic;
@@ -175,7 +174,7 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Proxies
 
         public LobbyQuery AddAppIdFilterToLobbyQuery(LobbyQuery query)
         {
-            return query.WithKeyValue(Constants.AppIdDataKey, GetAppId().ToString());
+            return query.WithKeyValue(SPConstants.AppIdDataKey, GetAppId().ToString());
         }
 
         public async Task<Lobby[]> ExecuteLobbyQuery(LobbyQuery query)
