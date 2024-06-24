@@ -1,4 +1,5 @@
-﻿using Steamworks.Data;
+﻿using Steamworks;
+using Steamworks.Data;
 using System;
 using UnityEngine;
 
@@ -67,5 +68,52 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Extentions
 				return false;
 			}
 		}
-	}
+
+        /// <summary>
+        /// Method for retrieving a generic value from the data of a lobby structure.
+        /// The data is parsed from JSON content, so the T class must be serializable.
+        /// </summary>
+        /// <typeparam name="T">The type used for serialization</typeparam>
+        /// <param name="lobby">Target lobby</param>
+        /// <param name="key">The key to be used to retrieve the data</param>
+        /// <param name="result">The result returned or a null value</param>
+        /// <returns>The success of the operation</returns>
+        public static bool GetTValueFromLobbyMemberData<T>(this Lobby lobby, Friend target, string key, out T? result)
+            where T : class
+        {
+            try
+            {
+                result = JsonUtility.FromJson(lobby.GetMemberData(target ,key), typeof(T)) as T;
+                return true;
+            }
+            catch (Exception)
+            {
+                result = null;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Method for saving a generic value to the data of a lobby structure.
+        /// The data is parsed to JSON content, so the T class must be serializable.
+        /// </summary>
+        /// <typeparam name="T">The type used for serialization</typeparam>
+        /// <param name="lobby">Target lobby</param>
+        /// <param name="key">The key to be used to save the data</param>
+        /// <param name="input">The data structure to be serialized</param>
+        /// <returns>The success of the operation</returns>
+        public static bool SetTValueToLobbyMemberData<T>(this Lobby lobby, string key, T input)
+            where T : class
+        {
+            try
+            {
+                lobby.SetMemberData(key, JsonUtility.ToJson(input));
+				return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+    }
 }
