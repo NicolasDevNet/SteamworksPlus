@@ -20,15 +20,9 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
         #region Fields
 
         /// <summary>
-        /// Shared network manager within the application
-        /// </summary>
-        [Required, Tooltip("Shared network manager within the application")]
-		public NetworkManager NetworkManager;
-
-        /// <summary>
         /// Shared transport within the application
         /// </summary>
-        [Required, Tooltip("Shared transport within the application")]
+        [NaughtyAttributes.ReadOnly, Tooltip("Shared transport within the application")]
 		public FacepunchTransport Transport;
 
         /// <summary>
@@ -146,7 +140,12 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 				DontDestroyOnLoad(gameObject);
 				SetLobbyCallbacks();
 				TryReadCommandLine();
-            }
+
+				if(NetworkManager.Singleton != null && Transport == null)
+				{
+					Transport = NetworkManager.Singleton.GetComponent<FacepunchTransport>();
+				}
+			}
 			else
 			{
                 Debug.Log("Keep old FacepunchLobby instance");
@@ -157,6 +156,11 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 				Instance = this;
 				DontDestroyOnLoad(gameObject);
 				SetLobbyCallbacks();
+
+				if (NetworkManager.Singleton != null && Transport == null)
+				{
+					Transport = NetworkManager.Singleton.GetComponent<FacepunchTransport>();
+				}
 			}
 		}
 
@@ -164,14 +168,14 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 		{
 			RemoveLobbyCallbacks();
 
-			if (NetworkManager == null)
+			if (NetworkManager.Singleton == null)
 			{
 				return;
 			}
 
-			NetworkManager.OnServerStarted -= OnServerStarted;
-			NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
-			NetworkManager.OnClientDisconnectCallback -= OnClientDisconnectCallback;
+			NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
+			NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
+			NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
 		}
 
 		private void OnApplicationQuit()
@@ -199,9 +203,9 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 		{
 			Debug.Log($"Trying to start hosting");
 
-			NetworkManager.OnServerStarted += OnServerStarted;
+			NetworkManager.Singleton.OnServerStarted += OnServerStarted;
 
-			NetworkManager.StartHost();
+			NetworkManager.Singleton.StartHost();
 
 			CurrentLobby = await _facepunchSteam.CreatelobbyAsync(MaxPlayers);
 		}
@@ -238,22 +242,22 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 		{
 			Debug.Log("Trying to disconnect");
 			CurrentLobby?.Leave();
-			if (NetworkManager == null)
+			if (NetworkManager.Singleton == null)
 			{
 				return;
 			}
 
-			if (NetworkManager.IsHost)
+			if (NetworkManager.Singleton.IsHost)
 			{
-				NetworkManager.OnServerStarted -= OnServerStarted;
+				NetworkManager.Singleton.OnServerStarted -= OnServerStarted;
 			}
 
-			if (NetworkManager.IsClient)
+			if (NetworkManager.Singleton.IsClient)
 			{
-				NetworkManager.OnClientConnectedCallback -= OnClientConnectedCallback;
+				NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
 			}
 
-			NetworkManager.Shutdown(true);
+			NetworkManager.Singleton.Shutdown(true);
 			Debug.Log("Disconneted");
 		}
 
@@ -318,12 +322,12 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 
 		private void StartClient(SteamId steamId)
 		{
-			NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
-			NetworkManager.OnClientDisconnectCallback += OnClientConnectedCallback;
+			NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
+			NetworkManager.Singleton.OnClientDisconnectCallback += OnClientConnectedCallback;
 
 			Transport.targetSteamId = steamId;
 
-			if (NetworkManager.StartClient())
+			if (NetworkManager.Singleton.StartClient())
 			{
 				Debug.Log("Client has started");
 			}
@@ -437,7 +441,7 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 
 		private void OnLobbyEntered(Lobby lobby)
 		{
-			if (NetworkManager.IsHost)
+			if (NetworkManager.Singleton.IsHost)
 			{
 				//No need to go through this part if the guest is the one who joined the lobby
 				return;
