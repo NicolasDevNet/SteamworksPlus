@@ -484,7 +484,7 @@ namespace SteamworksPlus.Runtime.Providers.Facepunch.Components
 		{
             Debug.Log($"Lobby data member updated. Lobby: {lobby.Id}");
 
-            OnLobbyDataChangedCallback?.Invoke(lobby, friend);
+            OnLobbyMemberDataChangedCallback?.Invoke(lobby, friend);
         }
 
         private void OnChatMessage(Lobby lobby, Friend friend, string message)
